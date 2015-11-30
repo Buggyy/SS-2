@@ -15,6 +15,7 @@ public class Dijkstra {
     private double[] distTo;          // distTo[v] = distance  of shortest s->v path
     private DirectedEdge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
     private IndexMinPQ<Double> pq;    // priority queue of vertices
+    private int N;
 
     /**
      * Computes a shortest paths tree from <tt>s</tt> to every other vertex in
@@ -95,7 +96,10 @@ public class Dijkstra {
         return path;
     }
 
-
+    public int onderzochteKnopen() {
+        return N;
+    }
+    
     // check optimality conditions:
     // (i) for all edges e:            distTo[e.to()] <= distTo[e.from()] + e.weight()
     // (ii) for all edge e on the SPT: distTo[e.to()] == distTo[e.from()] + e.weight()
