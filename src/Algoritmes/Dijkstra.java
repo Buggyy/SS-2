@@ -15,7 +15,8 @@ public class Dijkstra {
     private double[] distTo;          // distTo[v] = distance  of shortest s->v path
     private DirectedEdge[] edgeTo;    // edgeTo[v] = last edge on shortest s->v path
     private IndexMinPQ<Double> pq;    // priority queue of vertices
-    private int N;
+    private int N;                    // Amount of vertices
+    private int O;                    // Amount of tiles
 
     /**
      * Computes a shortest paths tree from <tt>s</tt> to every other vertex in
@@ -92,6 +93,7 @@ public class Dijkstra {
         Stack<DirectedEdge> path = new Stack<DirectedEdge>();
         for (DirectedEdge e = edgeTo[v]; e != null; e = edgeTo[e.from()]) {
             path.push(e);
+            N++;
         }
         return path;
     }

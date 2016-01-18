@@ -80,6 +80,7 @@ public class EdgeWeightedDigraph {
     public int V() {
         return V;
     }
+    
     /**
      * Bewaart de bitmap onder de naam fileName.
      * @param fileName naam van de bitmap
@@ -255,7 +256,7 @@ public class EdgeWeightedDigraph {
      * @param title    aanvullende titel ter specificatie van de bitmap
      */
     public void show(String filename, String title) {
-        t.show(filename + ".png " + title, 10, 0, 0);
+        t.show(filename + title, 10, 0, 0);
     }
     /**
      * Tekent het pad sp in de juiste kleur in de bitmap.
