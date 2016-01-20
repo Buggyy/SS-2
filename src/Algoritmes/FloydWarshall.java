@@ -8,16 +8,14 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
 
 /**
  * The <tt>FloydWarshall</tt> class represents a data type for solving the
- * all-pairs shortest paths problem in edge-weighted digraphs with
- * no negative cycles.
- * The edge weights can be positive, negative, or zero.
- * This class finds either a shortest path between every pair of vertices
- * or a negative cycle.
+ * all-pairs shortest paths problem in edge-weighted digraphs with no negative
+ * cycles. The edge weights can be positive, negative, or zero. This class finds
+ * either a shortest path between every pair of vertices or a negative cycle.
  * <p>
- * This implementation uses the Floyd-Warshall algorithm.
- * The constructor takes time proportional to <em>V</em><sup>3</sup> in the
- * worst case, where <em>V</em> is the number of vertices.
- * Afterwards, the <tt>dist()</tt>, <tt>hasPath()</tt>, and <tt>hasNegativeCycle()</tt>
+ * This implementation uses the Floyd-Warshall algorithm. The constructor takes
+ * time proportional to <em>V</em><sup>3</sup> in the worst case, where
+ * <em>V</em> is the number of vertices. Afterwards, the <tt>dist()</tt>,
+ * <tt>hasPath()</tt>, and <tt>hasNegativeCycle()</tt>
  * methods take constant time; the <tt>path()</tt> and <tt>negativeCycle()</tt>
  * method takes time proportional to the number of edges returned.
  * <p>
@@ -26,18 +24,22 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
  *
  * @author Robert Sedgewick
  * @author Kevin Wayne
- * @author Ömer Zülaloğlu [IS204] 500712124 
+ * @author Ömer Zülaloğlu [IS204] 500712124
  * @author Stefan Lobato [IS204] 500707274
- */ 
-    public class FloydWarshall {
-    private boolean hasNegativeCycle;  // is there a negative cycle?
-    private double[][] distTo;  // distTo[v][w] = length of shortest v->w path
-    private DirectedEdge[][] edgeTo;  // edgeTo[v][w] = last edge on shortest v->w path
+ */
+public class FloydWarshall {
+
+    private boolean hasNegativeCycle;   // is there a negative cycle?
+    private double[][] distTo;          // distTo[v][w] = length of shortest v->w path
+    private DirectedEdge[][] edgeTo;    // edgeTo[v][w] = last edge on shortest v->w path
+    private int N;                      // Length of the path
+    private int O;                      // Amount of vertices
 
     /**
-     * Computes a shortest paths tree from each vertex to to every other vertex in
-     * the edge-weighted digraph <tt>G</tt>. If no such shortest path exists for
-     * some pair of vertices, it computes a negative cycle.
+     * Computes a shortest paths tree from each vertex to to every other vertex
+     * in the edge-weighted digraph <tt>G</tt>. If no such shortest path exists
+     * for some pair of vertices, it computes a negative cycle.
+     *
      * @param G the edge-weighted digraph
      */
     public FloydWarshall(AdjMatrixEdgeWeightedDigraph G) {
@@ -57,6 +59,8 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
             for (DirectedEdge e : G.adj(v)) {
                 distTo[e.from()][e.to()] = e.weight();
                 edgeTo[e.from()][e.to()] = e;
+                //  Increment amount of verices
+                O++;
             }
             // in case of self-loops
             if (distTo[v][v] >= 0.0) {
@@ -69,7 +73,9 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
         for (int i = 0; i < V; i++) {
             // compute shortest paths using only 0, 1, ..., i as intermediate vertices
             for (int v = 0; v < V; v++) {
-                if (edgeTo[v][i] == null) continue;  // optimization
+                if (edgeTo[v][i] == null) {
+                    continue;  // optimization
+                }
                 for (int w = 0; w < V; w++) {
                     if (distTo[v][w] > distTo[v][i] + distTo[i][w]) {
                         distTo[v][w] = distTo[v][i] + distTo[i][w];
@@ -87,7 +93,9 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
 
     /**
      * Is there a negative cycle?
-     * @return <tt>true</tt> if there is a negative cycle, and <tt>false</tt> otherwise
+     *
+     * @return <tt>true</tt> if there is a negative cycle, and <tt>false</tt>
+     * otherwise
      */
     public boolean hasNegativeCycle() {
         return hasNegativeCycle;
@@ -95,8 +103,9 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
 
     /**
      * Returns a negative cycle, or <tt>null</tt> if there is no such cycle.
-     * @return a negative cycle as an iterable of edges,
-     * or <tt>null</tt> if there is no such cycle
+     *
+     * @return a negative cycle as an iterable of edges, or <tt>null</tt> if
+     * there is no such cycle
      */
     public Iterable<DirectedEdge> negativeCycle() {
         for (int v = 0; v < distTo.length; v++) {
@@ -104,9 +113,11 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
             if (distTo[v][v] < 0.0) {
                 int V = edgeTo.length;
                 EdgeWeightedDigraph spt = new EdgeWeightedDigraph(V);
-                for (int w = 0; w < V; w++)
-                    if (edgeTo[v][w] != null)
+                for (int w = 0; w < V; w++) {
+                    if (edgeTo[v][w] != null) {
                         spt.addEdge(edgeTo[v][w]);
+                    }
+                }
                 EdgeWeightedDirectedCycle finder = new EdgeWeightedDirectedCycle(spt);
                 assert finder.hasCycle();
                 return finder.cycle();
@@ -115,8 +126,17 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
         return null;
     }
 
+    public int getLength() {
+        return N;
+    }
+
+    public int onderzochteKnopen() {
+        return O;
+    }
+
     /**
      * Is there a path from the vertex <tt>s</tt> to vertex <tt>t</tt>?
+     *
      * @param s the source vertex
      * @param t the destination vertex
      * @return <tt>true</tt> if there is a path from vertex <tt>s</tt>
@@ -127,21 +147,26 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
     }
 
     /**
-     * Returns the length of a shortest path from vertex <tt>s</tt> to vertex <tt>t</tt>.
+     * Returns the length of a shortest path from vertex <tt>s</tt> to vertex
+     * <tt>t</tt>.
+     *
      * @param s the source vertex
      * @param t the destination vertex
-     * @return the length of a shortest path from vertex <tt>s</tt> to vertex <tt>t</tt>;
+     * @return the length of a shortest path from vertex <tt>s</tt> to vertex
+     * <tt>t</tt>;
      * <tt>Double.POSITIVE_INFINITY</tt> if no such path
      * @throws UnsupportedOperationException if there is a negative cost cycle
      */
     public double dist(int s, int t) {
-        if (hasNegativeCycle())
+        if (hasNegativeCycle()) {
             throw new UnsupportedOperationException("Negative cost cycle exists");
+        }
         return distTo[s][t];
     }
 
     /**
      * Returns a shortest path from vertex <tt>s</tt> to vertex <tt>t</tt>.
+     *
      * @param s the source vertex
      * @param t the destination vertex
      * @return a shortest path from vertex <tt>s</tt> to vertex <tt>t</tt>
@@ -149,12 +174,17 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
      * @throws UnsupportedOperationException if there is a negative cost cycle
      */
     public Iterable<DirectedEdge> path(int s, int t) {
-        if (hasNegativeCycle())
+        if (hasNegativeCycle()) {
             throw new UnsupportedOperationException("Negative cost cycle exists");
-        if (!hasPath(s, t)) return null;
+        }
+        if (!hasPath(s, t)) {
+            return null;
+        }
         Stack<DirectedEdge> path = new Stack<DirectedEdge>();
         for (DirectedEdge e = edgeTo[s][t]; e != null; e = edgeTo[s][e.from()]) {
             path.push(e);
+            //  Increment the length of the path
+            N++;
         }
         return path;
     }
@@ -178,8 +208,5 @@ import sas.po2.lib.EdgeWeightedDirectedCycle;
         }
         return true;
     }
-    
+
 }
-
-
-
