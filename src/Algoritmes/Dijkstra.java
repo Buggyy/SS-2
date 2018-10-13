@@ -9,7 +9,7 @@ import sas.po2.lib.IndexMinPQ;
  *
  * @author ericravestein
  * @author Ömer Zülaloğlu [IS204] 500712124
- * @author Stefan Lobato [IS204] 500707274
+ * @author Rafael Lobato [IS204] 500707274
  */
 public class Dijkstra {
 
